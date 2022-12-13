@@ -12,9 +12,9 @@ const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
   const navigate = useNavigate();
   const user = fetchUser();
 
-  const alreadySaved = (save?.filter(
-    (item) => item.postedBy?._id === user._id
-  )).length;
+  const alreadySaved = save
+    ? save.filter((item) => item.postedBy?._id === user._id)
+    : [];
 
   const savePin = (id) => {
     client
@@ -71,7 +71,7 @@ const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
                   <MdDownloadForOffline />
                 </a>
               </div>
-              {alreadySaved ? (
+              {alreadySaved.length > 0 ? (
                 <button
                   type="button"
                   className="bg-red-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-3xl hover:shadow-md"
@@ -100,9 +100,9 @@ const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
                   className="bg-white flex gap-2 items-center text-black text-sm font-bold p-2 pl-4 pr-4 rounded-full opacity-70 hover:opacity:100 hover:shadow-md"
                 >
                   <BsArrowUpRightCircleFill />
-                  {destination.length > 20
-                    ? destination.slice(8, 20)
-                    : destination.slice(8)}
+                  {destination.length > 15
+                    ? `${destination.slice(0, 15)}...`
+                    : destination}
                 </a>
               )}
               {postedBy?._id === user.googleId && (
@@ -122,13 +122,13 @@ const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
         )}
       </div>
       <Link
-        to={`user-profile/${user?._id}`}
+        to={`user-profile/${postedBy?._id}`}
         className="flex gap-g mt-2 items-center"
       >
         <img
-        className="w-8 h-8 rounded-full object-cover"
-        src={postedBy?.image}
-        alt="user-profile"
+          className="w-8 h-8 rounded-full object-cover"
+          src={postedBy?.image}
+          alt="user-profile"
         />
         <p className="font-semibold capitalize ml-2">{postedBy?.userName}</p>
       </Link>
